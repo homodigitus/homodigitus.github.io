@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="RAG sistemlerinde retrieval kalitesi, reranking gecikmesi ve üretim maliyetini birlikte optimize etmek için pratik bir yaklaşım.">
+  <meta name="theme-color" content="#08130f">
+  <title>RAG Sistemlerinde Doğruluk ve Maliyet Dengesi | Murat Öztürkmen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#article">İçeriğe geç</a>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <a class="brand" href="index.html" aria-label="Ana sayfa"><span class="brand-mark">MÖ</span><span class="brand-text">Murat Öztürkmen</span></a>
+    <button class="menu-toggle" type="button" aria-label="Menüyü aç" aria-expanded="false"><span></span><span></span></button>
+    <nav class="nav" aria-label="Ana menü">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="index.html#projeler">Projeler</a>
+      <a class="active-link" href="blog.html">Blog</a>
+      <a class="nav-cta" href="index.html#iletisim">İletişim</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Renk temasını değiştir" title="Temayı değiştir"><span aria-hidden="true">◐</span></button>
+  </header>
+
+  <main class="article-page" id="article">
+    <header class="article-hero section-shell reveal">
+      <a class="article-back" href="blog.html">← Tüm yazılar</a>
+      <div class="blog-meta"><span>RAG & SEARCH</span><time datetime="2026-11-02">2 Kasım 2026</time><span>5 dk okuma</span></div>
+      <h1>RAG sistemlerinde<br><em>doğruluk</em> ve maliyet<br>dengesini kurmak</h1>
+      <p class="article-deck">Retrieval kalitesi, reranking gecikmesi ve üretim maliyetini tek bir sistem hedefi olarak ele alan pratik bir yaklaşım.</p>
+      <div class="article-author"><img src="assets/murat-ozturkmen.jpeg" width="52" height="52" alt="Murat Öztürkmen"><div><strong>Murat Öztürkmen</strong><span>AI/ML Architect · Principal Data Scientist</span></div></div>
+    </header>
+
+    <div class="article-rule"></div>
+
+    <div class="article-layout section-shell">
+      <aside class="article-toc reveal" aria-label="İçindekiler">
+        <span>İÇİNDEKİLER</span>
+        <a href="#problem">1. Problem çerçevesi</a>
+        <a href="#hybrid">2. Hibrit erişim</a>
+        <a href="#reranking">3. Seçici reranking</a>
+        <a href="#evaluation">4. Değerlendirme</a>
+        <a href="#checklist">5. Üretim kontrol listesi</a>
+      </aside>
+
+      <article class="article-body reveal">
+        <p class="article-lead">İyi bir RAG sistemi yalnızca en benzer parçayı bulmaz; doğru kaynağı, kabul edilebilir gecikmeyle ve sürdürülebilir maliyetle kullanıcıya ulaştırır. Bu nedenle erişim, yeniden sıralama ve üretim katmanlarını birbirinden bağımsız modeller gibi değil, aynı karar sisteminin bileşenleri olarak tasarlamak gerekir.</p>
+
+        <h2 id="problem">1. Problemi tek bir skorla tanımlamak</h2>
+        <p>Bir RAG hattını sadece cevap doğruluğuyla optimize ettiğimizde her sorguda daha fazla doküman getirmek, daha büyük bir reranker çalıştırmak ve daha güçlü bir dil modeli kullanmak cazip görünür. Fakat üretimde kalite kadar gecikme ve maliyet de sistem davranışını belirler. Bu dengeyi aşağıdaki basit amaç fonksiyonuyla düşünebiliriz:</p>
+        <div class="article-formula">$$J = w_q Q - w_l L - w_c C$$</div>
+        <p>Burada $Q$ cevap ve kaynak kalitesini, $L$ uçtan uca gecikmeyi, $C$ ise istek başı maliyeti temsil eder. Ağırlıklar sabit olmak zorunda değildir; örneğin mevzuat sorularında kalite ağırlığı artarken, sık sorulan basit sorularda gecikme ve maliyet daha baskın olabilir.</p>
+
+        <h2 id="hybrid">2. Aday havuzunu hibrit erişimle kurmak</h2>
+        <p>Dense retrieval anlamsal benzerlikte güçlüdür; sparse retrieval ise ürün kodu, mevzuat maddesi veya özel isim gibi kesin eşleşmelerde avantaj sağlar. İki yaklaşımı birleştirmek, reranker'a daha dengeli bir aday havuzu sunar:</p>
+        <div class="article-formula">$$S(d,q)=\alpha S_{dense}(d,q)+(1-\alpha)S_{sparse}(d,q)$$</div>
+        <p>$\alpha$ değeri tek başına bir hiperparametre değildir; sorgu türüne göre dinamik belirlenebilir. Sayısal kod içeren bir sorguda sparse skora, kavramsal bir soruda dense skora daha fazla ağırlık vermek çoğu zaman daha kararlı sonuç üretir.</p>
+
+        <div class="article-callout"><strong>Pratik not</strong><p>Önce retrieval katmanının recall değerini yeterli seviyeye getirin. İlgili doküman aday havuzuna hiç girmiyorsa reranker veya daha güçlü bir LLM bu eksikliği gideremez.</p></div>
+
+        <h2 id="reranking">3. Reranker'ı her sorguda çalıştırmamak</h2>
+        <p>Cross-encoder reranker'lar kaliteyi artırabilir; ancak her sorguda geniş bir aday listesi üzerinde çalıştırıldığında gecikmenin ana kaynağına dönüşür. Daha verimli yaklaşım, yalnızca retrieval sonuçlarının belirsiz olduğu sorguları yeniden sıralamaktır. İlk iki aday arasındaki skor farkı küçükse veya kaynak çeşitliliği düşükse reranking devreye alınabilir.</p>
+
+        <div class="article-code code-block">
+          <div class="code-toolbar"><span>PYTHON · ADAPTIVE RERANKING</span><button type="button" class="copy-code" aria-label="Kodu kopyala">Kopyala</button></div>
+          <pre><code><span class="kw">def</span> <span class="fn">should_rerank</span>(scores, margin=<span class="num">0.08</span>):
+    <span class="str">"""Sonuçlar belirsizse reranker'ı çalıştır."""</span>
+    <span class="kw">if</span> len(scores) &lt; <span class="num">2</span>:
+        <span class="kw">return</span> <span class="kw">False</span>
+
+    confidence_gap = scores[<span class="num">0</span>] - scores[<span class="num">1</span>]
+    <span class="kw">return</span> confidence_gap &lt; margin</code></pre>
+        </div>
+        <p>Bu eşik çevrimdışı testlerle başlatılabilir, ardından canlı trafik üzerinde kalite ve gecikme hedeflerine göre kalibre edilebilir. Amaç reranker'ı kaldırmak değil, en fazla değer ürettiği sorgulara ayırmaktır.</p>
+
+        <h2 id="evaluation">4. Tek bir metrik yerine değerlendirme seti</h2>
+        <p>RAG değerlendirmesini yalnızca son cevabın benzerliğiyle yapmak, hatanın nerede oluştuğunu gizler. Ölçümü katmanlara ayırmak gerekir:</p>
+        <div class="metric-table" role="table" aria-label="RAG değerlendirme metrikleri">
+          <div role="row"><strong role="columnheader">Katman</strong><strong role="columnheader">Örnek metrikler</strong><strong role="columnheader">Yanıtladığı soru</strong></div>
+          <div role="row"><span>Retrieval</span><span>Recall@k, MRR, nDCG</span><span>Doğru kaynak aday havuzuna girdi mi?</span></div>
+          <div role="row"><span>Generation</span><span>Faithfulness, answer relevance</span><span>Yanıt kaynağa dayanıyor mu?</span></div>
+          <div role="row"><span>Operasyon</span><span>P50/P95 latency, maliyet/istek</span><span>Sistem sürdürülebilir mi?</span></div>
+        </div>
+
+        <h2 id="checklist">5. Üretim kontrol listesi</h2>
+        <ul class="article-checklist">
+          <li><span>01</span><div><strong>Sorguları sınıflandırın.</strong><p>Bilgi ihtiyacı, kesin eşleşme ve karmaşık muhakeme sorgularını aynı retrieval politikasıyla işlemeyin.</p></div></li>
+          <li><span>02</span><div><strong>Reranking bütçesi tanımlayın.</strong><p>Aday sayısını ve reranker kullanımını kalite kazanımına göre sınırlayın.</p></div></li>
+          <li><span>03</span><div><strong>Kaynak kalitesini izleyin.</strong><p>Yanlış veya güncelliğini yitirmiş içerik, model değiştirerek çözülemez.</p></div></li>
+          <li><span>04</span><div><strong>Uçtan uca deney yapın.</strong><p>Model metriğiyle birlikte gecikme, maliyet ve kullanıcı geri bildirimini değerlendirin.</p></div></li>
+        </ul>
+
+        <h2>Sonuç</h2>
+        <p>RAG sistemlerinde en iyi mimari, her bileşenin en güçlü model olduğu mimari değildir. En iyi sistem; sorgunun ihtiyacına göre retrieval, reranking ve generation bütçesini uyarlayan, kaliteyi kaynak düzeyinde ölçen ve maliyeti görünür kılan sistemdir. Doğruluk ile maliyet arasındaki denge, tek seferlik bir model seçimi değil; sürekli ölçülen bir ürün kararıdır.</p>
+
+        <footer class="article-end"><span>Yazıyı paylaş</span><a href="blog.html">Diğer yazılara dön →</a></footer>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer section-shell">
+    <div class="brand"><span class="brand-mark">MÖ</span><span class="brand-text">Murat Öztürkmen</span></div>
+    <p>AI/ML Architecture · Data Science · Technical Leadership</p>
+    <a href="#top">Yukarı dön ↑</a>
+    <small>© <span id="year"></span> Murat Öztürkmen</small>
+  </footer>
+  <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="assets/script.js"></script>
+</body>
+</html>

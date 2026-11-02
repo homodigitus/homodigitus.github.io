@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Murat Öztürkmen'in üretken yapay zekâ, RAG, agentic AI, nedensel çıkarım ve karar bilimi üzerine teknik yazıları.">
+  <meta name="theme-color" content="#08130f">
+  <title>Blog | Murat Öztürkmen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">İçeriğe geç</a>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <a class="brand" href="index.html" aria-label="Ana sayfa">
+      <span class="brand-mark">MÖ</span><span class="brand-text">Murat Öztürkmen</span>
+    </a>
+    <button class="menu-toggle" type="button" aria-label="Menüyü aç" aria-expanded="false"><span></span><span></span></button>
+    <nav class="nav" aria-label="Ana menü">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="index.html#uzmanlik">Uzmanlık</a>
+      <a href="index.html#projeler">Projeler</a>
+      <a class="active-link" href="blog.html" aria-current="page">Blog</a>
+      <a class="nav-cta" href="index.html#iletisim">İletişim</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Renk temasını değiştir" title="Temayı değiştir"><span aria-hidden="true">◐</span></button>
+  </header>
+
+  <main id="main" class="blog-page">
+    <section class="blog-page-hero section-shell reveal">
+      <div>
+        <p class="eyebrow">MURAT ÖZTÜRKMEN / BLOG</p>
+        <h1>Teknik notlar,<br><em>fikirler</em> ve deneyler.</h1>
+      </div>
+      <p>Üretken yapay zekâdan karar bilimine; sahada öğrendiklerimi, araştırma notlarımı ve uygulanabilir örnekleri paylaşıyorum.</p>
+    </section>
+
+    <div class="topic-strip section-shell reveal" aria-label="Blog konuları">
+      <span>Generative AI</span><span>RAG</span><span>Agentic Systems</span><span>Causal AI</span><span>MLOps</span><span>Optimization</span>
+    </div>
+
+    <section class="section blog-list-section">
+      <div class="section-shell">
+        <p class="section-index reveal">ÖNE ÇIKAN YAZI</p>
+        <article class="blog-featured reveal">
+          <div class="blog-article-copy">
+            <div class="blog-meta"><span>RAG & SEARCH</span><time datetime="2026-11-02">2 Kasım 2026</time><span>5 dk okuma</span></div>
+            <h2><a href="rag-sistemlerinde-dogruluk-ve-maliyet.html">RAG sistemlerinde doğruluk ve maliyet dengesini kurmak</a></h2>
+            <p>İyi bir RAG sistemi yalnızca en benzer parçayı bulmaz; erişim kalitesi, yeniden sıralama gecikmesi ve üretim maliyetini aynı karar fonksiyonu içinde dengeler. Pratikte hibrit arama ile aday havuzunu genişletip reranker'ı yalnızca belirsiz sorgularda çalıştırmak, her istekte en pahalı modeli kullanmadan yanıt güvenilirliğini artırır; bu nedenle başarıyı tek bir doğruluk metriğiyle değil, kaynak isabeti, gecikme ve istek başı maliyetin birlikte izlendiği bir değerlendirme setiyle ölçmek gerekir.</p>
+          </div>
+          <aside class="blog-demo" aria-label="Matematik ve kod örneği">
+            <div class="formula-block">
+              <span class="demo-label">LATEX ÖRNEĞİ</span>
+              <div class="formula">$$S(d,q)=\alpha\,S_{dense}(d,q)+(1-\alpha)\,S_{sparse}(d,q)$$</div>
+            </div>
+            <div class="code-block">
+              <div class="code-toolbar"><span>PYTHON</span><button type="button" class="copy-code" aria-label="Kodu kopyala">Kopyala</button></div>
+              <pre><code><span class="kw">def</span> <span class="fn">hybrid_score</span>(dense, sparse, alpha=<span class="num">0.65</span>):
+    <span class="str">&quot;&quot;&quot;Dense ve sparse skorlarını birleştirir.&quot;&quot;&quot;</span>
+    <span class="kw">return</span> alpha * dense + (<span class="num">1</span> - alpha) * sparse</code></pre>
+            </div>
+          </aside>
+        </article>
+
+        <div class="all-posts-heading reveal"><p class="section-index">TÜM YAZILAR</p><span>3 yazı</span></div>
+        <div class="blog-grid blog-page-grid">
+          <article class="blog-card reveal"><div class="blog-meta"><span>RAG & SEARCH</span><time datetime="2026-11-02">2 Kasım 2026</time></div><h3><a href="rag-sistemlerinde-dogruluk-ve-maliyet.html">RAG sistemlerinde doğruluk ve maliyet dengesini kurmak</a></h3><p>Hibrit arama, reranking ve maliyet optimizasyonunu aynı değerlendirme çerçevesinde ele almak.</p><a class="card-read" href="rag-sistemlerinde-dogruluk-ve-maliyet.html">5 dk okuma ↗</a></article>
+          <article class="blog-card reveal"><div class="blog-meta"><span>AGENTIC AI</span><span>Yakında</span></div><h3>Üretim ortamında ajanları nasıl izlemeliyiz?</h3><p>Tool çağrılarından karar izlerine, maliyet ve hata takibine uzanan gözlemlenebilirlik katmanı.</p><span class="card-read">Yakında</span></article>
+          <article class="blog-card reveal"><div class="blog-meta"><span>CAUSAL AI</span><span>Yakında</span></div><h3>Tahminden müdahaleye: Nedensel düşünmek</h3><p>Bir modelin ne olacağını tahmin etmesiyle, ne yapmamız gerektiğini söylemesi arasındaki fark.</p><span class="card-read">Yakında</span></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer section-shell">
+    <div class="brand"><span class="brand-mark">MÖ</span><span class="brand-text">Murat Öztürkmen</span></div>
+    <p>AI/ML Architecture · Data Science · Technical Leadership</p>
+    <a href="index.html">Ana sayfaya dön ←</a>
+    <small>© <span id="year"></span> Murat Öztürkmen</small>
+  </footer>
+  <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="assets/script.js"></script>
+</body>
+</html>
