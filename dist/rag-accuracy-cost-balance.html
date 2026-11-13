@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A practical approach to jointly optimizing retrieval quality, reranking latency, and generation cost in RAG systems.">
+  <meta name="theme-color" content="#08130f">
+  <title>Balancing Accuracy and Cost in RAG Systems | Murat Öztürkmen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#article">Skip to content</a>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <a class="brand" href="index-en.html" aria-label="Home"><span class="brand-mark">MÖ</span><span class="brand-text">Murat Öztürkmen</span></a>
+    <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index-en.html">Home</a>
+      <a href="index-en.html#projects">Projects</a>
+      <a class="active-link" href="blog-en.html">Blog</a>
+      <a class="nav-cta" href="index-en.html#contact">Contact</a>
+    </nav>
+    <div class="language-switch" aria-label="Language selection">
+      <a href="rag-sistemlerinde-dogruluk-ve-maliyet.html" lang="tr">TR</a>
+      <span aria-hidden="true">/</span>
+      <a class="active" aria-current="page" href="rag-accuracy-cost-balance.html" lang="en">EN</a>
+    </div>
+    <button class="theme-toggle" type="button" aria-label="Change color theme" title="Change theme"><span aria-hidden="true">◐</span></button>
+  </header>
+
+  <main class="article-page" id="article">
+    <header class="article-hero section-shell reveal">
+      <a class="article-back" href="blog-en.html">← All posts</a>
+      <div class="blog-meta"><span>RAG & SEARCH</span><time datetime="2026-11-02">November 2, 2026</time><span>5 min read</span></div>
+      <h1>Balancing <em>accuracy</em><br>and cost in<br>RAG systems</h1>
+      <p class="article-deck">A practical approach that treats retrieval quality, reranking latency, and generation cost as a single system objective.</p>
+      <div class="article-author"><img src="assets/murat-ozturkmen.jpeg" width="52" height="52" alt="Murat Öztürkmen"><div><strong>Murat Öztürkmen</strong><span>AI/ML Architect · Principal Data Scientist</span></div></div>
+    </header>
+
+    <div class="article-rule"></div>
+
+    <div class="article-layout section-shell">
+      <aside class="article-toc reveal" aria-label="Table of contents">
+        <span>CONTENTS</span>
+        <a href="#problem">1. Problem framing</a>
+        <a href="#hybrid">2. Hybrid retrieval</a>
+        <a href="#reranking">3. Selective reranking</a>
+        <a href="#evaluation">4. Evaluation</a>
+        <a href="#checklist">5. Production checklist</a>
+      </aside>
+
+      <article class="article-body reveal">
+        <p class="article-lead">A strong RAG system does more than find the most similar passage; it delivers the right source to the user with acceptable latency and sustainable cost. Retrieval, reranking, and generation should therefore be designed as components of one decision system rather than as independent models.</p>
+
+        <h2 id="problem">1. Define the problem with a single score</h2>
+        <p>When we optimize a RAG pipeline only for answer accuracy, it is tempting to retrieve more documents, run a larger reranker, and use a more capable language model for every query. In production, however, latency and cost shape system behavior just as much as quality. We can express this balance with the following simple objective function:</p>
+        <div class="article-formula">$$J = w_q Q - w_l L - w_c C$$</div>
+        <p>Here, $Q$ represents answer and source quality, $L$ end-to-end latency, and $C$ cost per request. The weights do not need to be fixed: quality may carry more weight for regulatory questions, while latency and cost may dominate for simple, frequently asked questions.</p>
+
+        <h2 id="hybrid">2. Build the candidate pool with hybrid retrieval</h2>
+        <p>Dense retrieval is strong at semantic similarity, while sparse retrieval has an advantage for exact matches such as product codes, regulatory clauses, or proper names. Combining the two produces a more balanced candidate pool for the reranker:</p>
+        <div class="article-formula">$$S(d,q)=\alpha S_{dense}(d,q)+(1-\alpha)S_{sparse}(d,q)$$</div>
+        <p>$\alpha$ is not merely a static hyperparameter; it can be selected dynamically by query type. Giving more weight to the sparse score for queries containing numeric codes, and to the dense score for conceptual questions, often produces more stable results.</p>
+
+        <div class="article-callout"><strong>Practical note</strong><p>First, bring recall at the retrieval layer to an acceptable level. If the relevant document never enters the candidate pool, neither a reranker nor a stronger LLM can recover it.</p></div>
+
+        <h2 id="reranking">3. Do not run the reranker for every query</h2>
+        <p>Cross-encoder rerankers can improve quality, but when applied to a large candidate list for every query, they become a major source of latency. A more efficient approach is to rerank only when retrieval results are uncertain. Reranking can be triggered when the score gap between the top two candidates is small or source diversity is low.</p>
+
+        <div class="article-code code-block">
+          <div class="code-toolbar"><span>PYTHON · ADAPTIVE RERANKING</span><button type="button" class="copy-code" aria-label="Copy code">Copy</button></div>
+          <pre><code><span class="kw">def</span> <span class="fn">should_rerank</span>(scores, margin=<span class="num">0.08</span>):
+    <span class="str">"""Run the reranker when results are uncertain."""</span>
+    <span class="kw">if</span> len(scores) &lt; <span class="num">2</span>:
+        <span class="kw">return</span> <span class="kw">False</span>
+
+    confidence_gap = scores[<span class="num">0</span>] - scores[<span class="num">1</span>]
+    <span class="kw">return</span> confidence_gap &lt; margin</code></pre>
+        </div>
+        <p>This threshold can be initialized through offline testing and calibrated against quality and latency targets on live traffic. The goal is not to remove the reranker, but to reserve it for queries where it creates the most value.</p>
+
+        <h2 id="evaluation">4. Use an evaluation suite, not a single metric</h2>
+        <p>Evaluating RAG only by the similarity of the final answer hides where errors occur. Measurement should be separated by layer:</p>
+        <div class="metric-table" role="table" aria-label="RAG evaluation metrics">
+          <div role="row"><strong role="columnheader">Layer</strong><strong role="columnheader">Example metrics</strong><strong role="columnheader">Question answered</strong></div>
+          <div role="row"><span>Retrieval</span><span>Recall@k, MRR, nDCG</span><span>Did the correct source enter the candidate pool?</span></div>
+          <div role="row"><span>Generation</span><span>Faithfulness, answer relevance</span><span>Is the answer grounded in the source?</span></div>
+          <div role="row"><span>Operations</span><span>P50/P95 latency, cost/request</span><span>Is the system sustainable?</span></div>
+        </div>
+
+        <h2 id="checklist">5. Production checklist</h2>
+        <ul class="article-checklist">
+          <li><span>01</span><div><strong>Classify queries.</strong><p>Do not process information-seeking, exact-match, and complex reasoning queries with the same retrieval policy.</p></div></li>
+          <li><span>02</span><div><strong>Define a reranking budget.</strong><p>Limit candidate count and reranker usage according to the quality gain they provide.</p></div></li>
+          <li><span>03</span><div><strong>Monitor source quality.</strong><p>Incorrect or outdated content cannot be fixed by switching models.</p></div></li>
+          <li><span>04</span><div><strong>Run end-to-end experiments.</strong><p>Evaluate latency, cost, and user feedback alongside model metrics.</p></div></li>
+        </ul>
+
+        <h2>Conclusion</h2>
+        <p>The best RAG architecture is not the one that uses the most powerful model in every component. The best system adapts retrieval, reranking, and generation budgets to each query, measures quality at the source level, and makes cost visible. Balancing accuracy and cost is not a one-time model choice; it is a continuously measured product decision.</p>
+
+        <footer class="article-end"><span>Share this post</span><a href="blog-en.html">Back to all posts →</a></footer>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer section-shell">
+    <div class="brand"><span class="brand-mark">MÖ</span><span class="brand-text">Murat Öztürkmen</span></div>
+    <p>AI/ML Architecture · Data Science · Technical Leadership</p>
+    <a href="#top">Back to top ↑</a>
+    <small>© <span id="year"></span> Murat Öztürkmen</small>
+  </footer>
+  <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="assets/script.js"></script>
+</body>
+</html>

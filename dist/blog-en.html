@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Technical writing by Murat Öztürkmen on generative AI, RAG, agentic AI, causal inference, and decision science.">
+  <meta name="theme-color" content="#08130f">
+  <title>Blog | Murat Öztürkmen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <a class="brand" href="index-en.html" aria-label="Home">
+      <span class="brand-mark">MÖ</span><span class="brand-text">Murat Öztürkmen</span>
+    </a>
+    <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index-en.html">Home</a>
+      <a href="index-en.html#expertise">Expertise</a>
+      <a href="index-en.html#projects">Projects</a>
+      <a class="active-link" href="blog-en.html" aria-current="page">Blog</a>
+      <a class="nav-cta" href="index-en.html#contact">Contact</a>
+    </nav>
+    <div class="language-switch" aria-label="Language selection">
+      <a href="blog.html" lang="tr">TR</a>
+      <span aria-hidden="true">/</span>
+      <a class="active" aria-current="page" href="blog-en.html" lang="en">EN</a>
+    </div>
+    <button class="theme-toggle" type="button" aria-label="Change color theme" title="Change theme"><span aria-hidden="true">◐</span></button>
+  </header>
+
+  <main id="main" class="blog-page">
+    <section class="blog-page-hero section-shell reveal">
+      <div>
+        <p class="eyebrow">MURAT ÖZTÜRKMEN / BLOG</p>
+        <h1>Technical notes,<br><em>ideas</em>, and experiments.</h1>
+      </div>
+      <p>From generative AI to decision science, I share lessons from the field, research notes, and practical examples.</p>
+    </section>
+
+    <div class="topic-strip section-shell reveal" aria-label="Blog topics">
+      <span>Generative AI</span><span>RAG</span><span>Agentic Systems</span><span>Causal AI</span><span>MLOps</span><span>Optimization</span>
+    </div>
+
+    <section class="section blog-list-section">
+      <div class="section-shell">
+        <p class="section-index reveal">FEATURED POST</p>
+        <article class="blog-featured reveal">
+          <div class="blog-article-copy">
+            <div class="blog-meta"><span>RAG & SEARCH</span><time datetime="2026-11-02">November 2, 2026</time><span>5 min read</span></div>
+            <h2><a href="rag-accuracy-cost-balance.html">Balancing accuracy and cost in RAG systems</a></h2>
+            <p>A strong RAG system does more than retrieve the most similar chunk; it balances retrieval quality, reranking latency, and generation cost within the same decision function. In practice, expanding the candidate pool with hybrid search and running the reranker only for uncertain queries improves answer reliability without using the most expensive model for every request. Success should therefore be measured with an evaluation set that tracks source accuracy, latency, and cost per request together—not with a single accuracy metric.</p>
+          </div>
+          <aside class="blog-demo" aria-label="Math and code example">
+            <div class="formula-block">
+              <span class="demo-label">LATEX EXAMPLE</span>
+              <div class="formula">$$S(d,q)=\alpha\,S_{dense}(d,q)+(1-\alpha)\,S_{sparse}(d,q)$$</div>
+            </div>
+            <div class="code-block">
+              <div class="code-toolbar"><span>PYTHON</span><button type="button" class="copy-code" aria-label="Copy code">Copy</button></div>
+              <pre><code><span class="kw">def</span> <span class="fn">hybrid_score</span>(dense, sparse, alpha=<span class="num">0.65</span>):
+    <span class="str">&quot;&quot;&quot;Combine dense and sparse scores.&quot;&quot;&quot;</span>
+    <span class="kw">return</span> alpha * dense + (<span class="num">1</span> - alpha) * sparse</code></pre>
+            </div>
+          </aside>
+        </article>
+
+        <div class="all-posts-heading reveal"><p class="section-index">ALL POSTS</p><span>3 posts</span></div>
+        <div class="blog-grid blog-page-grid">
+          <article class="blog-card reveal"><div class="blog-meta"><span>RAG & SEARCH</span><time datetime="2026-11-02">November 2, 2026</time></div><h3><a href="rag-accuracy-cost-balance.html">Balancing accuracy and cost in RAG systems</a></h3><p>Bringing hybrid search, reranking, and cost optimization into one evaluation framework.</p><a class="card-read" href="rag-accuracy-cost-balance.html">5 min read ↗</a></article>
+          <article class="blog-card reveal"><div class="blog-meta"><span>AGENTIC AI</span><span>Coming soon</span></div><h3>How should we monitor agents in production?</h3><p>An observability layer spanning tool calls, decision traces, cost, and error tracking.</p><span class="card-read">Coming soon</span></article>
+          <article class="blog-card reveal"><div class="blog-meta"><span>CAUSAL AI</span><span>Coming soon</span></div><h3>From prediction to intervention: thinking causally</h3><p>The difference between predicting what will happen and deciding what we should do.</p><span class="card-read">Coming soon</span></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer section-shell">
+    <div class="brand"><span class="brand-mark">MÖ</span><span class="brand-text">Murat Öztürkmen</span></div>
+    <p>AI/ML Architecture · Data Science · Technical Leadership</p>
+    <a href="index-en.html">Back to home ←</a>
+    <small>© <span id="year"></span> Murat Öztürkmen</small>
+  </footer>
+  <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="assets/script.js"></script>
+</body>
+</html>
